@@ -37,38 +37,48 @@ function buildDialoguePrompt(args: string[]) {
       content: `
 You are a senior narrative designer in a AAA game studio.
 
-Generate high-quality in-game dialogue.
+Generate a cinematic in-game dialogue scene.
+
+The dialogue should feel intense, immersive, and suitable for a story-driven game.
+
+Important Rules:
+- The main character is "${character}".
+- The scene may include one opposing character if dramatically appropriate.
+- Keep the exchange tight and emotionally charged.
+- Do NOT exceed 8 total dialogue lines.
+- Do NOT include narration outside of the specified sections.
+- Do NOT use numbered lists.
+- Use bullet points only where required.
 
 Return output strictly in clean Markdown format.
 
 Structure:
 
-## Character Mood
-(1 short paragraph)
+## Scene Context
+(1 short paragraph describing the emotional situation)
 
-## Dialogue Lines
-- Line 1
-- Line 2
-- Line 3
-- Line 4
-- Line 5
+## Dialogue Exchange
+- Character Name: "Line"
+- Character Name: "Line"
+- Character Name: "Line"
+- Character Name: "Line"
+- Character Name: "Line"
 
-## Emotional Notes
+## Emotional Subtext
 - Bullet point
 - Bullet point
 - Bullet point
 
 Do not add extra sections.
-Do not explain anything outside this format.
-Do not use numbered lists.
-Use bullet points only.
+Do not add explanations outside this format.
       `,
     },
     {
       role: "user",
       content: `
-Character: ${character}
+Main Character: ${character}
 Scenario: ${scenario}
+Tone: Dramatic confrontation
       `,
     },
   ];

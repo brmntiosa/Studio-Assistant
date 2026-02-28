@@ -12,10 +12,27 @@ export default function MessageBubble({ message }: Props) {
   return (
     <div
       className={clsx(
-        "max-w-[75%] px-4 py-3 rounded-xl text-sm whitespace-pre-wrap",
-        isUser ? "ml-auto bg-blue-600 text-white" : "bg-zinc-800 text-zinc-200",
+        "max-w-[80%] px-4 py-3 rounded-2xl text-sm",
+        isUser
+          ? "ml-auto bg-blue-600 shadow-md"
+          : "bg-zinc-800/80 border border-zinc-700",
       )}>
-      <ReactMarkdown>{message.content}</ReactMarkdown>
+      <ReactMarkdown
+        components={{
+          h2: ({ children }) => (
+            <h2 className="text-lg font-semibold mt-4 mb-2 text-blue-400">
+              {children}
+            </h2>
+          ),
+          p: ({ children }) => (
+            <p className="mb-3 leading-relaxed">{children}</p>
+          ),
+          li: ({ children }) => (
+            <li className="ml-4 list-disc mb-1">{children}</li>
+          ),
+        }}>
+        {message.content}
+      </ReactMarkdown>
     </div>
   );
 }
