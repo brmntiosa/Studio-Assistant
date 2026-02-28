@@ -1,5 +1,6 @@
 import { Message } from "@/types/chat";
 import clsx from "clsx";
+import ReactMarkdown from "react-markdown";
 
 interface Props {
   message: Message;
@@ -14,7 +15,7 @@ export default function MessageBubble({ message }: Props) {
         "max-w-[75%] px-4 py-3 rounded-xl text-sm whitespace-pre-wrap",
         isUser ? "ml-auto bg-blue-600 text-white" : "bg-zinc-800 text-zinc-200",
       )}>
-      {message.content}
+      <ReactMarkdown>{message.content}</ReactMarkdown>
     </div>
   );
 }
