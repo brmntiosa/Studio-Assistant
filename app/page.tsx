@@ -223,7 +223,7 @@ export default function Home() {
 
         {/* CHAT AREA */}
         <div className="flex flex-col flex-1 p-4 md:p-6 overflow-hidden">
-          <div className="flex flex-col flex-1 bg-zinc-900/60 backdrop-blur border border-zinc-800 rounded-2xl p-6 shadow-xl overflow-hidden">
+          <div className="flex flex-col flex-1 bg-zinc-900/60  border border-zinc-800 rounded-2xl p-6 shadow-xl overflow-hidden">
             <ChatWindow messages={messages} />
             <ChatInput onSend={sendMessage} loading={loading} />
           </div>
