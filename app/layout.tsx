@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Studio Assistant",
   description: "AI-powered internal assistant for game studios",
 };
@@ -24,7 +24,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-gradient-to-b from-zinc-950 to-black text-white">
+      <body
+        className={`
+          ${geistSans.variable}
+          ${geistMono.variable}
+          bg-gradient-to-b
+          from-zinc-950
+          to-black
+          text-white
+        `}>
         {children}
       </body>
     </html>
