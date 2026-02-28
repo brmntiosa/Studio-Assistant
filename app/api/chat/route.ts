@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { generateAIResponse } from "@/lib/ai";
+import { parseCommand } from "@/lib/commands";
+import { buildPrompt } from "@/lib/prompt-builder";
 
 export async function POST(req: Request) {
   try {
@@ -12,17 +14,8 @@ export async function POST(req: Request) {
       );
     }
 
-    const messages = [
-      {
-        role: "system",
-        content:
-          "You are Studio Assistant, an AI helping game studio teams with writing and design tasks.",
-      },
-      {
-        role: "user",
-        content: body.message,
-      },
-    ];
+    const parsed = parseCommand(body.message);
+    const messages = buildPrompt(parsed);
 
     const reply = await generateAIResponse(messages);
 
