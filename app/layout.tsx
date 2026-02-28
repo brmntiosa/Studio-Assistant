@@ -14,18 +14,17 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Studio Assistant",
-  description: "AI-powered internal studio assistant",
+  description: "AI-powered internal assistant for game studios",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className="bg-gradient-to-b from-zinc-950 to-black text-white">
         {children}
       </body>
     </html>
