@@ -11,6 +11,7 @@ export default function Home() {
   const [activeThread, setActiveThread] = useState(0);
   const [loading, setLoading] = useState(false);
   const [temperature, setTemperature] = useState(0.7);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const messages = threads[activeThread] || [];
 
@@ -109,70 +110,108 @@ export default function Home() {
   };
 
   return (
-    <main className="flex h-screen overflow-hidden">
+    <main className="flex h-screen overflow-hidden relative">
       {/* SIDEBAR */}
-      <aside className="w-64 bg-zinc-900/70 backdrop-blur border-r border-zinc-800 p-4 flex flex-col">
-        <h2 className="text-lg font-semibold mb-4">🎮 Studio</h2>
-
-        <div className="text-xs text-zinc-400 uppercase mb-2">
-          Conversations
-        </div>
-
-        <div className="space-y-2 text-sm mb-4">
-          {threads.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setActiveThread(index)}
-              className={`w-full text-left px-3 py-2 rounded-lg transition ${
-                activeThread === index
-                  ? "bg-blue-600"
-                  : "bg-zinc-800 hover:bg-zinc-700"
-              }`}>
-              Thread {index + 1}
-            </button>
-          ))}
-        </div>
-
-        <button
-          onClick={createNewThread}
-          className="bg-blue-600 hover:bg-blue-700 text-sm px-3 py-2 rounded-lg mb-6">
-          + New Chat
-        </button>
-
-        <div className="text-xs text-zinc-400 uppercase mb-2">Commands</div>
-
-        <div className="space-y-2 text-sm">
-          <div className="bg-zinc-800 px-3 py-2 rounded-lg">
-            /write-dialogue
-          </div>
-          <div className="bg-zinc-800 px-3 py-2 rounded-lg">
-            /asset-description
-          </div>
-        </div>
-
-        <div className="mt-auto pt-4 border-t border-zinc-800 text-xs text-zinc-500">
-          Temperature: {temperature.toFixed(1)}
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            value={temperature}
-            onChange={(e) => setTemperature(Number(e.target.value))}
-            className="w-full mt-2"
+      <>
+        {/* Mobile Overlay */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            onClick={() => setSidebarOpen(false)}
           />
-        </div>
-      </aside>
+        )}
+
+        <aside
+          className={`
+      fixed md:relative z-50
+      h-full
+      w-64
+      bg-zinc-900/95 backdrop-blur
+      border-r border-zinc-800
+      p-4 flex flex-col
+      transform transition-transform duration-300
+      ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+      md:translate-x-0
+    `}>
+          <h2 className="text-lg font-semibold mb-4">🎮 Studio</h2>
+
+          <div className="text-xs text-zinc-400 uppercase mb-2">
+            Conversations
+          </div>
+
+          <div className="space-y-2 text-sm mb-4">
+            {threads.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  setActiveThread(index);
+                  setSidebarOpen(false);
+                }}
+                className={`w-full text-left px-3 py-2 rounded-lg transition ${
+                  activeThread === index
+                    ? "bg-blue-600"
+                    : "bg-zinc-800 hover:bg-zinc-700"
+                }`}>
+                Thread {index + 1}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => {
+              createNewThread();
+              setSidebarOpen(false);
+            }}
+            className="bg-blue-600 hover:bg-blue-700 text-sm px-3 py-2 rounded-lg mb-6">
+            + New Chat
+          </button>
+
+          <div className="text-xs text-zinc-400 uppercase mb-2">Commands</div>
+
+          <div className="space-y-2 text-sm">
+            <div className="bg-zinc-800 px-3 py-2 rounded-lg">
+              /write-dialogue
+            </div>
+            <div className="bg-zinc-800 px-3 py-2 rounded-lg">
+              /asset-description
+            </div>
+          </div>
+
+          <div className="mt-auto pt-4 border-t border-zinc-800 text-xs text-zinc-500">
+            Temperature: {temperature.toFixed(1)}
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.1"
+              value={temperature}
+              onChange={(e) => setTemperature(Number(e.target.value))}
+              className="w-full mt-2"
+            />
+          </div>
+        </aside>
+      </>
 
       {/* MAIN CONTENT */}
       <div className="flex flex-col flex-1">
         {/* HEADER */}
-        <header className="h-16 border-b border-zinc-800 flex items-center justify-between px-6 bg-zinc-950/70 backdrop-blur">
-          <div>
-            <h1 className="text-xl font-semibold">Studio Assistant</h1>
-            <p className="text-xs text-zinc-400">
-              AI-powered assistant for narrative & design teams
-            </p>
+        <header className="h-16 border-b border-zinc-800 flex items-center justify-between px-4 md:px-6 bg-zinc-950/70 backdrop-blur">
+          <div className="flex items-center gap-3">
+            {/* Hamburger (mobile only) */}
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="md:hidden bg-zinc-800 p-2 rounded-lg">
+              ☰
+            </button>
+
+            <div>
+              <h1 className="text-lg md:text-xl font-semibold">
+                Studio Assistant
+              </h1>
+              <p className="text-xs text-zinc-400 hidden md:block">
+                AI-powered assistant for narrative & design teams
+              </p>
+            </div>
           </div>
 
           <button
@@ -183,7 +222,7 @@ export default function Home() {
         </header>
 
         {/* CHAT AREA */}
-        <div className="flex flex-col flex-1 p-6 overflow-hidden">
+        <div className="flex flex-col flex-1 p-4 md:p-6 overflow-hidden">
           <div className="flex flex-col flex-1 bg-zinc-900/60 backdrop-blur border border-zinc-800 rounded-2xl p-6 shadow-xl overflow-hidden">
             <ChatWindow messages={messages} />
             <ChatInput onSend={sendMessage} loading={loading} />
