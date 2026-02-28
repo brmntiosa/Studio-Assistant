@@ -4,6 +4,17 @@ const client = new OpenAI({
   apiKey: process.env.AI_API_KEY,
 });
 
+export async function streamAIResponse(messages: any[], temperature: number) {
+  const stream = await client.chat.completions.create({
+    model: process.env.AI_MODEL || "gpt-4o-mini",
+    messages,
+    temperature,
+    stream: true,
+  });
+
+  return stream;
+}
+
 export async function generateAIResponse(messages: any[]) {
   try {
     const response = await client.chat.completions.create({

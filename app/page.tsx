@@ -41,10 +41,26 @@ export default function Home() {
       content,
     };
 
-    // 🔹 Safely update thread with user message
-    setThreads((prevThreads) => {
-      const updated = [...prevThreads];
+    // Add user message
+    setThreads((prev) => {
+      const updated = [...prev];
       updated[activeThread] = [...updated[activeThread], userMessage];
+      return updated;
+    });
+
+    // Add placeholder assistant message
+    const assistantId = uuidv4();
+
+    setThreads((prev) => {
+      const updated = [...prev];
+      updated[activeThread] = [
+        ...updated[activeThread],
+        {
+          id: assistantId,
+          role: "assistant",
+          content: "",
+        },
+      ];
       return updated;
     });
 
@@ -53,38 +69,45 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [...messages, userMessage].map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
+          messages: [...messages, userMessage],
           temperature,
         }),
       });
 
-      const data = await response.json();
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
 
-      const assistantMessage: Message = {
-        id: uuidv4(),
-        role: "assistant",
-        content: data.reply || "No response",
-      };
+      if (!reader) return;
 
-      // 🔹 Safely append assistant response
-      setThreads((prevThreads) => {
-        const updated = [...prevThreads];
-        updated[activeThread] = [...updated[activeThread], assistantMessage];
-        return updated;
-      });
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+
+        setThreads((prev) => {
+          const updated = [...prev];
+          const thread = [...updated[activeThread]];
+          const msgIndex = thread.findIndex((m) => m.id === assistantId);
+          thread[msgIndex] = {
+            ...thread[msgIndex],
+            content: thread[msgIndex].content + chunk,
+          };
+          updated[activeThread] = thread;
+          return updated;
+        });
+      }
     } catch (error) {
-      const errorMessage: Message = {
-        id: uuidv4(),
-        role: "assistant",
-        content: "Error connecting to server.",
-      };
-
-      setThreads((prevThreads) => {
-        const updated = [...prevThreads];
-        updated[activeThread] = [...updated[activeThread], errorMessage];
+      setThreads((prev) => {
+        const updated = [...prev];
+        updated[activeThread] = [
+          ...updated[activeThread],
+          {
+            id: uuidv4(),
+            role: "assistant",
+            content: "Streaming error occurred.",
+          },
+        ];
         return updated;
       });
     } finally {
