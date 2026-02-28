@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Studio Assistant - AI-Powered Internal Narrative Tool (Option A)
 
-## Getting Started
+## 1. Project Name
 
-First, run the development server:
+**Studio Assistant - AI-Powered Internal Narrative Tool (Option A)**
+
+This project implements **Section A (AI-Powered Studio Assistant)**.
+It is a web-based AI tool designed for narrative and design teams in game studios, supporting structured command-based content generation with real-time streaming responses and multi-thread conversation support.
+
+---
+
+## 2. Live Demo
+
+[https://studio-assistant-weld.vercel.app/](https://studio-assistant-weld.vercel.app/)
+
+---
+
+## 3. Tech Stack
+
+**Frontend**
+
+* Next.js (App Router)
+* TypeScript
+* TailwindCSS
+
+**Backend**
+
+* Next.js Route Handlers
+* OpenAI API (streaming enabled)
+
+**AI Service**
+
+* OpenAI (GPT-4o-mini model)
+
+**Deployment**
+
+* Vercel
+
+---
+
+## 4. Time Log (WIB)
+
+| Date         | Start | End   | Activity                                                        | Duration |
+|--------------|-------|-------|-----------------------------------------------------------------|----------|
+| Feb 28, 2026 | 13:00 | 14:00 | Project setup, Next.js initialization, base layout & API route | 1h       |
+| Feb 28, 2026 | 14:00 | 15:00 | Chat UI implementation & API integration                        | 1h       |
+| Feb 28, 2026 | 15:00 | 16:00 | AI service layer & command parser architecture                  | 1h       |
+| Feb 28, 2026 | 16:00 | 17:00 | Structured prompt builder, memory support & UI polish           | 1h       |
+| Mar 1, 2026  | 01:00 | 02:00 | Streaming implementation & integration testing                  | 1h       |
+| Mar 1, 2026  | 02:00 | 02:30 | Responsive layout fixes & hydration issue resolution            | 0.5h     |
+| Mar 1, 2026  | 02:30 | 03:00 | Final production testing, README completion & submission prep   | 0.5h     |
+
+**Total: ~6 hours**
+
+---
+
+## 5. AI Tools Used
+
+* **ChatGPT 5.2**
+  Used to validate architectural decisions, refine streaming implementation, assist with debugging hydration issues, and improve UI responsiveness.
+
+* **OpenAI API**
+  Used as the core LLM service provider with streaming enabled for real-time response rendering.
+
+---
+
+## 6. Setup Instructions
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repo-url>
+cd studio-assistant
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create a `.env.local` file:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+AI_API_KEY=your_key
+AI_MODEL=gpt-4o-mini
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Run locally:
 
-## Learn More
+```
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+http://localhost:3000
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 7. Design Decisions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Command-Based Prompt Abstraction
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Commands such as `/write-dialogue` and `/asset-description` are parsed through a dedicated command parser and mapped to structured prompt builders. This keeps the system modular and easily extensible for additional commands (e.g., `/summarize`, `/draft-email`).
+
+### Streaming Architecture
+
+Implemented true streaming using:
+
+* `stream: true` in the OpenAI SDK
+* `ReadableStream` in the Next.js API route
+* Incremental UI updates via `getReader()` on the frontend
+
+This improves perceived responsiveness and user experience.
+
+### Token Safety
+
+Conversation history is limited to the latest 10 messages to prevent excessive token usage and maintain performance.
+
+### Multi-Thread Support
+
+Threads are implemented as arrays of message arrays, allowing users to switch conversations without backend persistence.
+
+### Local Persistence
+
+Threads are stored in `localStorage` to maintain session continuity without introducing database complexity.
+
+---
+
+## 8. What I Would Improve
+
+With more time, I would:
+
+* Add authentication & role-based access
+* Implement database-backed persistent threads
+* Add streaming typing indicators
+* Introduce prompt versioning system
+* Improve animation and micro-interactions
+* Add usage metrics and logging
+
