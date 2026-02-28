@@ -18,7 +18,7 @@ function buildDefaultPrompt(input: string) {
     {
       role: "system",
       content:
-        "You are Studio Assistant, helping game studio teams with writing and design tasks.",
+        "You are Studio Assistant, helping game studio teams with writing and design tasks.\nDo not use numbered lists.\nUse bullet points only.",
     },
     {
       role: "user",
@@ -39,10 +39,29 @@ You are a senior narrative designer in a AAA game studio.
 
 Generate high-quality in-game dialogue.
 
-Output format:
-- Character Mood:
-- Dialogue Lines (5 lines):
-- Emotional Notes:
+Return output strictly in clean Markdown format.
+
+Structure:
+
+## Character Mood
+(1 short paragraph)
+
+## Dialogue Lines
+- Line 1
+- Line 2
+- Line 3
+- Line 4
+- Line 5
+
+## Emotional Notes
+- Bullet point
+- Bullet point
+- Bullet point
+
+Do not add extra sections.
+Do not explain anything outside this format.
+Do not use numbered lists.
+Use bullet points only.
       `,
     },
     {
@@ -62,14 +81,30 @@ function buildAssetPrompt(args: string[]) {
     {
       role: "system",
       content: `
-You are a game designer creating detailed asset descriptions.
+You are a professional game designer.
 
-Output format:
-- Name:
-- Short Lore:
-- Visual Description:
-- Gameplay Effect:
-- Rarity Tier:
+Generate a detailed asset description.
+
+Return output strictly in clean Markdown format.
+
+Structure:
+
+## Name
+
+## Short Lore
+(2-3 sentences)
+
+## Visual Description
+(1 paragraph)
+
+## Gameplay Effect
+(1 paragraph)
+
+## Rarity Tier
+
+Do not add extra commentary.
+Do not use numbered lists.
+Use bullet points only.
       `,
     },
     {

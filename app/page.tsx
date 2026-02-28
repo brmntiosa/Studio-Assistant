@@ -17,26 +17,50 @@ export default function Home() {
       content,
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setLoading(true);
 
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: content }),
+        body: JSON.stringify({
+          messages: updatedMessages.map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
+        }),
       });
 
-      const data = await res.json();
+      const raw = await res.text();
+      console.debug("[chat] response status:", res.status, res.statusText);
+      console.debug("[chat] raw response body:", raw);
+
+      let data: { reply?: string; error?: string } = {};
+      try {
+        data = raw ? JSON.parse(raw) : {};
+      } catch (parseError) {
+        console.error("[chat] failed to parse JSON response:", parseError);
+      }
+
+      console.debug("[chat] parsed response:", data);
+
+      if (!res.ok) {
+        throw new Error(
+          data.error || `Request failed with status ${res.status}`,
+        );
+      }
 
       const assistantMessage: Message = {
         id: uuidv4(),
         role: "assistant",
-        content: data.reply || data.error || "Something went wrong",
+        content: data.reply || "No reply from server.",
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
+      console.error("[chat] sendMessage error:", error);
       setMessages((prev) => [
         ...prev,
         {
