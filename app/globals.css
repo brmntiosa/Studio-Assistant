@@ -4,6 +4,9 @@
   --background: #ffffff;
   --foreground: #171717;
 }
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
 
 @theme inline {
   --color-background: var(--background);
