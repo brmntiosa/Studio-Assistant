@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { generateAIResponse } from "@/lib/ai";
 
 export async function POST(req: Request) {
   try {
@@ -11,12 +12,24 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json({
-      reply: "API connected successfully",
-    });
-  } catch (error) {
+    const messages = [
+      {
+        role: "system",
+        content:
+          "You are Studio Assistant, an AI helping game studio teams with writing and design tasks.",
+      },
+      {
+        role: "user",
+        content: body.message,
+      },
+    ];
+
+    const reply = await generateAIResponse(messages);
+
+    return NextResponse.json({ reply });
+  } catch (error: any) {
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: error.message || "Internal server error" },
       { status: 500 },
     );
   }
